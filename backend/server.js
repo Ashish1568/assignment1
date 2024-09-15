@@ -1,3 +1,4 @@
+// Import required modules
 const express = require('express');
 const cors = require('cors');
 const sql = require('mssql');
@@ -5,6 +6,19 @@ const path = require('path');
 const app = express();
 const port = process.env.PORT || 5000;
 
+// Database configuration
+const dbConfig = {
+  user: 'maqadmin',
+  password: '#1Password',
+  server: 'bootcampsepnewserver.database.windows.net',
+  database: 'Bootcampsep9newdb',
+  options: {
+    encrypt: true, // This ensures encryption for Azure SQL databases
+    trustServerCertificate: false // Set to true only if you're working with self-signed certs
+  }
+};
+
+// Middleware
 app.use(cors());
 app.use(express.json());
 
@@ -15,12 +29,11 @@ app.use(express.static(path.join(__dirname, '../frontend/dist')));
 app.get('/api/task2-data', async (req, res) => {
   try {
     let pool = await sql.connect(dbConfig);
-    let result = await pool.request()
-      .query('SELECT TOP 20 * FROM [SalesLT].[Customer]');
+    let result = await pool.request().query('SELECT TOP 20 * FROM [SalesLT].[Customer]');
     res.json(result.recordset);
   } catch (err) {
     console.error('Database query error:', err);
-    res.status(500).json({ error: 'Internal Server Error' });
+    res.status(500).json({ error: 'Internal Server Error', details: err.message });
   }
 });
 
@@ -29,11 +42,12 @@ app.get('/api/task3-data', async (req, res) => {
   try {
     let pool = await sql.connect(dbConfig);
     let result = await pool.request()
-      .query(`SELECT p.Name AS ProductName, p.Color, p.Size, p.Weight FROM [SalesLT].[Product] p JOIN [SalesLT].[ProductCategory] pc ON p.ProductCategoryID = pc.ProductCategoryID`);
+      .query(`SELECT p.Name AS ProductName, p.Color, p.Size, p.Weight FROM [SalesLT].[Product] p 
+              JOIN [SalesLT].[ProductCategory] pc ON p.ProductCategoryID = pc.ProductCategoryID`);
     res.json(result.recordset);
   } catch (err) {
     console.error('Database query error:', err);
-    res.status(500).json({ error: 'Internal Server Error' });
+    res.status(500).json({ error: 'Internal Server Error', details: err.message });
   }
 });
 
