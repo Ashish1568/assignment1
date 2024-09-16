@@ -7,7 +7,7 @@ const Task2 = () => {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    // Fetch data from the backend server using axios
+    
     axios.get('http://localhost:5000/api/task2-data')
       .then(response => {
         setData(response.data);

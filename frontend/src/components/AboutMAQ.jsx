@@ -1,5 +1,5 @@
 import React from 'react';
-import './AboutMAQ.css'; // Import the CSS for this component
+import './AboutMAQ.css';
 
 const AboutMAQ = () => {
   return (
